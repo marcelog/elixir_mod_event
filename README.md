@@ -3,9 +3,31 @@
 # elixir_mod_event
 Elixir client for the [FreeSWITCH mod_event_socket](https://freeswitch.org/confluence/display/FREESWITCH/mod_event_socket).
 
-## Inbound Mode
+----
 
-### Starting a TCP connection
+# Using it with Mix
+
+To use it in your Mix projects, first add it as a dependency:
+
+```elixir
+def deps do
+  [{:elixir_mod_event, "~> 0.0.1"}]
+end
+```
+Then run mix deps.get to install it.
+
+----
+
+# Documentation
+
+Feel free to take a look at the [documentation](http://hexdocs.pm/elixir_mod_event/)
+served by hex.pm or the source itself to find more.
+
+----
+
+# Inbound Mode
+
+## Starting a TCP connection
 To connect to FreeSWITCH just start a [Connection](https://github.com/marcelog/elixir_mod_event/blob/master/lib/elixir_mod_event/connection.ex),
 which is just a [GenServer](http://elixir-lang.org/docs/v1.0/elixir/GenServer.html) that you
 can plug into your own supervisor tree.
@@ -21,7 +43,7 @@ You can also start and link the connection:
 {:ok, #PID<0.159.0>}
 ```
 
-### Results
+## Results
 When executing a command (either in foreground or background) or receiving events,
 the result will be a [Packet](https://github.com/marcelog/elixir_mod_event/blob/master/lib/elixir_mod_event/packet.ex),
 with a structure with some fields of interest:
@@ -55,7 +77,7 @@ To unregister the listener process:
 
 **NOTE**: The caller process will be monitored and auto-unregister when the registered process dies.
 
-### Examples
+## Examples
 
 ### [api](https://freeswitch.org/confluence/display/FREESWITCH/mod_event_socket#mod_event_socket-api)
 Sends a [command](https://freeswitch.org/confluence/display/FREESWITCH/mod_commands).
@@ -152,6 +174,8 @@ receive a message with the result of the command. Be sure to subscribe to the
 ```elixir
 > C.noevents :fs1
 ```
+
+----
 
 # License
 The source code is released under Apache 2 License.
