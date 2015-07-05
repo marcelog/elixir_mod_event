@@ -1,0 +1,3 @@
+Content-Type: command/reply
+Reply-Text: +OK accepted
+

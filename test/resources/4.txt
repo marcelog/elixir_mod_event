@@ -1,0 +1,23 @@
+Content-Length: 654
+Content-Type: text/event-plain
+
+Command: sendevent%20myeventito
+content-length: 57
+hdr1: val1
+Event-UUID: ee38d831-c80a-4520-8249-7424fa353408
+Event-Name: CUSTOM
+Core-UUID: a95e64ec-df1f-48f4-acbf-34b4c359d747
+FreeSWITCH-Hostname: faulty.local
+FreeSWITCH-Switchname: faulty.local
+FreeSWITCH-IPv4: 192.168.1.102
+FreeSWITCH-IPv6: %3A%3A1
+Event-Date-Local: 2015-07-04%2020%3A12%3A06
+Event-Date-GMT: Sat,%2004%20Jul%202015%2023%3A12%3A06%20GMT
+Event-Date-Timestamp: 1436051526425813
+Event-Calling-File: mod_event_socket.c
+Event-Calling-Function: parse_command
+Event-Calling-Line-Number: 2209
+Event-Sequence: 4205
+Content-Length: 57
+
+this is a custom payload this is a custom payload oh yeah

@@ -1,0 +1,42 @@
+Content-Length: 555
+Content-Type: text/event-plain
+
+Event-Name: RE_SCHEDULE
+Core-UUID: a95e64ec-df1f-48f4-acbf-34b4c359d747
+FreeSWITCH-Hostname: faulty.local
+FreeSWITCH-Switchname: faulty.local
+FreeSWITCH-IPv4: 192.168.1.102
+FreeSWITCH-IPv6: %3A%3A1
+Event-Date-Local: 2015-07-04%2015%3A18%3A14
+Event-Date-GMT: Sat,%2004%20Jul%202015%2018%3A18%3A14%20GMT
+Event-Date-Timestamp: 1436033894106095
+Event-Calling-File: switch_scheduler.c
+Event-Calling-Function: switch_scheduler_execute
+Event-Calling-Line-Number: 71
+Event-Sequence: 1996
+Task-ID: 2
+Task-Desc: heartbeat
+Task-Group: core
+Task-Runtime: 1436033914
+
+Content-Length: 554
+Content-Type: text/event-plain
+
+Event-Name: RE_SCHEDULE
+Core-UUID: a95e64ec-df1f-48f4-acbf-34b4c359d747
+FreeSWITCH-Hostname: faulty.local
+FreeSWITCH-Switchname: faulty.local
+FreeSWITCH-IPv4: 192.168.1.102
+FreeSWITCH-IPv6: %3A%3A1
+Event-Date-Local: 2015-07-04%2015%3A18%3A14
+Event-Date-GMT: Sat,%2004%20Jul%202015%2018%3A18%3A14%20GMT
+Event-Date-Timestamp: 1436033894106095
+Event-Calling-File: switch_scheduler.c
+Event-Calling-Function: switch_scheduler_execute
+Event-Calling-Line-Number: 71
+Event-Sequence: 1997
+Task-ID: 3
+Task-Desc: check_ip
+Task-Group: core
+Task-Runtime: 1436033954
+
