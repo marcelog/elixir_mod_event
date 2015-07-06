@@ -4,6 +4,7 @@
 Elixir client for the [FreeSWITCH mod_event_socket](https://freeswitch.org/confluence/display/FREESWITCH/mod_event_socket).
 
 It also supports the [mod_erlang_event](https://freeswitch.org/confluence/display/FREESWITCH/mod_erlang_event).
+
 ----
 
 # Using it with Mix
