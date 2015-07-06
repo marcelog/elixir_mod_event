@@ -3,6 +3,7 @@
 # elixir_mod_event
 Elixir client for the [FreeSWITCH mod_event_socket](https://freeswitch.org/confluence/display/FREESWITCH/mod_event_socket).
 
+It also supports the [mod_erlang_event](https://freeswitch.org/confluence/display/FREESWITCH/mod_erlang_event).
 ----
 
 # Using it with Mix
@@ -99,7 +100,7 @@ receive a message with the result of the command. Be sure to subscribe to the
 > C.event :fs1, "BACKGROUND_JOB"
 > C.bgapi :fs1, "md5", "some_data"
 "b857e1dd-e4de-424e-9ff6-8e05e9a076d9"
-> receive do pkt -> pkt after 1000 -> :ok end
+> flush
 {:fs_job_result, "b857e1dd-e4de-424e-9ff6-8e05e9a076d9", %FSModEvent.Packet{
   custom_payload: '0d9247cbce34aba4aca8d5c887a0f0a4',
   ...
@@ -119,6 +120,7 @@ receive a message with the result of the command. Be sure to subscribe to the
 ### [event](https://freeswitch.org/confluence/display/FREESWITCH/mod_event_socket#mod_event_socket-event)
 ```elixir
 > C.event :fs1, "all"
+> C.event :fs1, "CUSTOM", "conference::maintenance"
 ```
 
 ### [myevents](https://freeswitch.org/confluence/display/FREESWITCH/mod_event_socket#mod_event_socket-SpecialCase-'myevents')
@@ -178,6 +180,95 @@ receive a message with the result of the command. Be sure to subscribe to the
 ### [noevents](https://freeswitch.org/confluence/display/FREESWITCH/mod_event_socket#mod_event_socket-noevents)
 ```elixir
 > C.noevents :fs1
+```
+
+----
+
+# Inbound Mode (Erlang node connection)
+
+To "talk" to the FreeSWITCH erlang node, use the [Erlang](https://github.com/marcelog/elixir_mod_event/blob/master/lib/elixir_mod_event/erlang.ex) module:
+
+```elixir
+> alias FSModEvent.Erlang, as: E
+> node = :"freeswitch@host.local"
+```
+
+### [api](https://freeswitch.org/confluence/display/FREESWITCH/mod_erlang_event#mod_erlang_event-api)
+Sends a [command](https://freeswitch.org/confluence/display/FREESWITCH/mod_commands).
+
+```elixir
+> E.api node, "host_lookup", "google.com"
+"173.194.42.82"
+```
+
+### [bgapi](https://freeswitch.org/confluence/display/FREESWITCH/mod_erlang_event#mod_erlang_event-bgapi)
+Like `api` but runs the command without blocking the process. The caller process will
+receive a message with a tuple like this:
+
+  {:fs_job_result, job_id, status, result}
+
+  Where:
+
+  job_id :: String.t
+
+  status :: :ok | :error
+
+  result :: :timeout | String.t
+
+
+```elixir
+> E.bgapi node, "md5", "some_data"
+"4a41cfc1-d9b7-4966-95d0-5de5ec690a07"
+
+> flush
+{:fs_job_result, "4a41cfc1-d9b7-4966-95d0-5de5ec690a07", :ok,
+ "0d9247cbce34aba4aca8d5c887a0f0a4"}
+```
+
+### [register_event_handler](https://freeswitch.org/confluence/display/FREESWITCH/mod_erlang_event#mod_erlang_event-register_event_handler)
+```elixir
+> E.register_event_handler node
+```
+
+### [event](https://freeswitch.org/confluence/display/FREESWITCH/mod_erlang_event#mod_erlang_event-event)
+```elixir
+> E.event node, "all"
+> E.event node, "CUSTOM", "conference::maintenance"
+```
+
+### [nixevent](https://freeswitch.org/confluence/display/FREESWITCH/mod_erlang_event#mod_erlang_event-nixevent)
+```elixir
+> E.nixevent node, "all"
+```
+
+### [noevents](https://freeswitch.org/confluence/display/FREESWITCH/mod_erlang_event#mod_erlang_event-noevents)
+```elixir
+> E.noevents node
+```
+
+### [register_log_handler](https://freeswitch.org/confluence/display/FREESWITCH/mod_erlang_event#mod_erlang_event-register_log_handler)
+```elixir
+> E.register_log_handler node
+```
+
+### [set_log_level](https://freeswitch.org/confluence/display/FREESWITCH/mod_erlang_event#mod_erlang_event-set_log_level)
+```elixir
+> E.set_log_level node, "debug"
+```
+
+### [nolog](https://freeswitch.org/confluence/display/FREESWITCH/mod_erlang_event#mod_erlang_event-nolog)
+```elixir
+> E.nolog node
+```
+
+### [exit](https://freeswitch.org/confluence/display/FREESWITCH/mod_erlang_event#mod_erlang_event-exit)
+```elixir
+> E.exit node
+```
+
+### [getpid](https://freeswitch.org/confluence/display/FREESWITCH/mod_erlang_event#mod_erlang_event-getpid)
+```elixir
+> E.getpid node
 ```
 
 ----
