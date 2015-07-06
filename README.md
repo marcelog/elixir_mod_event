@@ -25,7 +25,7 @@ served by hex.pm or the source itself to find more.
 
 ----
 
-# Inbound Mode
+# Inbound Mode (TCP connection)
 
 ## Starting a TCP connection
 To connect to FreeSWITCH just start a [Connection](https://github.com/marcelog/elixir_mod_event/blob/master/lib/elixir_mod_event/connection.ex),
@@ -168,6 +168,11 @@ receive a message with the result of the command. Be sure to subscribe to the
 ### [nolog](https://freeswitch.org/confluence/display/FREESWITCH/mod_event_socket#mod_event_socket-nolog)
 ```elixir
 > C.nolog :fs1
+```
+
+### [nixevent](https://freeswitch.org/confluence/display/FREESWITCH/mod_event_socket#mod_event_socket-nixevent)
+```elixir
+> C.nixevent :fs1, "all"
 ```
 
 ### [noevents](https://freeswitch.org/confluence/display/FREESWITCH/mod_event_socket#mod_event_socket-noevents)

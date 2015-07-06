@@ -3,6 +3,8 @@ defmodule FSModEvent.Connection do
   Connection process. A GenServer that you can plug into your own supervisor
   tree.
 
+  See: https://freeswitch.org/confluence/display/FREESWITCH/mod_event_socket
+
   Copyright 2015 Marcelo Gornstein <marcelog@gmail.com>
 
   Licensed under the Apache License, Version 2.0 (the "License");
@@ -269,6 +271,16 @@ defmodule FSModEvent.Connection do
   @spec nolog(GenServer.server) :: FSModEvent.Packet.t
   def nolog(name) do
     block_send name, "nolog"
+  end
+
+  @doc """
+  Suppress the specified type of event.
+
+  See: https://freeswitch.org/confluence/display/FREESWITCH/mod_event_socket#mod_event_socket-nixevent
+  """
+  @spec nixevent(GenServer.server, String.t) :: FSModEvent.Packet.t
+  def nixevent(name, events) do
+    block_send name, "nixevent #{events}"
   end
 
   @doc """
