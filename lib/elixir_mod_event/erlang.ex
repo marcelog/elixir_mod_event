@@ -36,8 +36,7 @@ defmodule FSModEvent.Erlang do
 
   @doc """
   Runs an API command in background. Returns a job id. The caller process will
-  receive a message with a tuple like this:
-  {:fs_job_result, job_id, status, result}
+  receive a message with a tuple like this {:fs_job_result, job_id, status, result}
 
   Where:
 
