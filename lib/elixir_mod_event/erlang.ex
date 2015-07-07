@@ -211,6 +211,21 @@ defmodule FSModEvent.Erlang do
   end
 
   @doc """
+  Makes FreeSWITCH send all the events related to the given call uuid to the
+  given regitered process name (or the caller process, if none is given).
+
+  See: https://freeswitch.org/confluence/display/FREESWITCH/mod_erlang_event#mod_erlang_event-handlecall
+  """
+  @spec handlecall(node, String.t, atom) :: :ok | no_return
+  def handlecall(node, uuid, process \\ nil) do
+    if is_nil process do
+      run node, :handlecall, {:handlecall, uuid}
+    else
+      run node, :handlecall, {:handlecall, uuid, process}
+    end
+  end
+
+  @doc """
   Binds the caller process as a configuration provider for the given
   configuration section. The sections are the same as for mod_xml_curl, see:
   https://freeswitch.org/confluence/display/FREESWITCH/mod_xml_curl.

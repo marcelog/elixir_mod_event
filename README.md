@@ -283,6 +283,12 @@ receive a message with a tuple like this:
 > E.getpid node
 ```
 
+### [handlecall](https://freeswitch.org/confluence/display/FREESWITCH/mod_erlang_event#mod_erlang_event-handlecall)
+```elixir
+> E.handlecall node, "e96b78d8-1dc2-4634-84c4-58366f1a92b1"
+> E.handlecall node, "e96b78d8-1dc2-4634-84c4-58366f1a92b1", :my_call_handler
+```
+
 ### Configuration hooks
 You can also configure FreeSWITCH by sending and receiving regular erlang messages by
 binding to the needed configuration sections. See [XML Search Bindings](https://freeswitch.org/confluence/display/FREESWITCH/mod_erlang_event#mod_erlang_event-XMLsearchbindings).
@@ -296,7 +302,7 @@ The format and sections correspond to the ones supported by [mod_xml_curl](https
 # Sample XML text
 > xml = "<?xml version='1.0' en ... "
 
-#
+# After a configuration message is received, a reply can be sent.
 > receive do
     {:fetch, :directory, "domain", "name", domain_name, uuid, headers} ->
       E.config_reply node, uuid, xml
