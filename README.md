@@ -206,16 +206,19 @@ Sends a [command](https://freeswitch.org/confluence/display/FREESWITCH/mod_comma
 Like `api` but runs the command without blocking the process. The caller process will
 receive a message with a tuple like this:
 
+```elixir
   {:fs_job_result, job_id, status, result}
+```
 
   Where:
 
+```elixir
   job_id :: String.t
 
   status :: :ok | :error
 
   result :: :timeout | String.t
-
+```
 
 ```elixir
 > E.bgapi node, "md5", "some_data"
@@ -267,9 +270,38 @@ receive a message with a tuple like this:
 > E.exit node
 ```
 
+### [sendmsg](https://freeswitch.org/confluence/display/FREESWITCH/mod_erlang_event#mod_erlang_event-sendmsg)
+```elixir
+> E.sendmsg_exec node, "e96b78d8-1dc2-4634-84c4-58366f1a92b1", "uuid_answer", "e96b78d8-1dc2-4634-84c4-58366f1a92b1"
+> E.sendmsg_hangup node, "e96b78d8-1dc2-4634-84c4-58366f1a92b1", 16
+> E.sendmsg_unicast node, "e96b78d8-1dc2-4634-84c4-58366f1a92b1", "tcp", "native", "127.0.0.1", 8025, "127.0.0.1", 8026
+> E.sendmsg_nomedia node, "e96b78d8-1dc2-4634-84c4-58366f1a92b1", "info"
+```
+
 ### [getpid](https://freeswitch.org/confluence/display/FREESWITCH/mod_erlang_event#mod_erlang_event-getpid)
 ```elixir
 > E.getpid node
+```
+
+### Configuration hooks
+You can also configure FreeSWITCH by sending and receiving regular erlang messages by
+binding to the needed configuration sections. See [XML Search Bindings](https://freeswitch.org/confluence/display/FREESWITCH/mod_erlang_event#mod_erlang_event-XMLsearchbindings).
+
+The format and sections correspond to the ones supported by [mod_xml_curl](https://freeswitch.org/confluence/display/FREESWITCH/mod_xml_curl).
+
+```elixir
+# Bind to the "directory" section
+> E.config_bind node, "directory"
+
+# Sample XML text
+> xml = "<?xml version='1.0' en ... "
+
+#
+> receive do
+    {:fetch, :directory, "domain", "name", domain_name, uuid, headers} ->
+      E.config_reply node, uuid, xml
+  after 10 -> :ok
+  end
 ```
 
 ----

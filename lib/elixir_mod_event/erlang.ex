@@ -151,6 +151,100 @@ defmodule FSModEvent.Erlang do
   end
 
   @doc """
+  See: https://freeswitch.org/confluence/display/FREESWITCH/mod_erlang_event#mod_erlang_event-sendevent
+  """
+  @spec sendevent(node, String.t, [{String.t, String.t}]) :: :ok | no_return
+  def sendevent(node, event, headers) do
+    run node, :sendevent, {:sendevent, event, headers}
+  end
+
+  @doc """
+  See: https://freeswitch.org/confluence/display/FREESWITCH/mod_erlang_event#mod_erlang_event-sendmsg
+  """
+  @spec sendmsg_exec(
+    node, String.t, String.t, String.t, Integer.t
+  ) :: :ok | no_return
+  def sendmsg_exec(name, uuid, command, args \\ "", loops \\ 1) do
+    sendmsg name, uuid, 'execute', [
+      {'execute-app-name', to_char_list(command)},
+      {'execute-app-arg', to_char_list(args)},
+      {'loops', to_char_list(loops)}
+    ]
+  end
+
+  @doc """
+  See: https://freeswitch.org/confluence/display/FREESWITCH/mod_erlang_event#mod_erlang_event-sendmsg
+  """
+  @spec sendmsg_hangup(node, String.t, Integer.t) :: :ok | no_return
+  def sendmsg_hangup(name, uuid, cause \\ 16) do
+    sendmsg name, uuid, 'hangup', [{'hangup-cause', to_char_list(cause)}]
+  end
+
+  @doc """
+  See: https://freeswitch.org/confluence/display/FREESWITCH/mod_erlang_event#mod_erlang_event-sendmsg
+  """
+  @spec sendmsg_unicast(
+    node, String.t, String.t, String.t,
+    String.t, Integer.t, String.t, Integer.t
+  ) :: FSModEvent.Packet.t
+  def sendmsg_unicast(
+    name, uuid, transport \\ "tcp", flags \\ "native",
+    local_ip \\ "127.0.0.1", local_port \\ 8025,
+    remote_ip \\ "127.0.0.1", remote_port \\ 8026
+  ) do
+    sendmsg name, uuid, 'unicast', [
+      {'local-ip', to_char_list(local_ip)},
+      {'local-port', to_char_list(local_port)},
+      {'remote-ip', to_char_list(remote_ip)},
+      {'remote-port', to_char_list(remote_port)},
+      {'transport', to_char_list(transport)},
+      {'flags', to_char_list(flags)}
+    ]
+  end
+
+  @doc """
+  See: https://freeswitch.org/confluence/display/FREESWITCH/mod_erlang_event#mod_erlang_event-sendmsg
+  """
+  @spec sendmsg_nomedia(node, String.t, String.t) :: FSModEvent.Packet.t
+  def sendmsg_nomedia(node, uuid, info \\ "") do
+    sendmsg node, uuid, :nomedia, [{'nomedia-uuid', to_char_list(info)}]
+  end
+
+  @doc """
+  Binds the caller process as a configuration provider for the given
+  configuration section. The sections are the same as for mod_xml_curl, see:
+  https://freeswitch.org/confluence/display/FREESWITCH/mod_xml_curl.
+
+  You will receive messages of the type:
+
+  {fetch, <Section>, <Tag>, <Key>, <Value>, <FetchID>, <Params>}
+
+  Where FetchID is the ID you received in the request and XMLString is the XML
+  reply you want to send. FetchID and XML can be binaries or strings.
+
+  To tell the switch to take some action, send back a reply of the format:
+  {fetch_reply, <FetchID>, <XML>}
+
+  See: https://freeswitch.org/confluence/display/FREESWITCH/mod_erlang_event#mod_erlang_event-XMLsearchbindings
+  """
+  @spec config_bind(node, String.t) :: :ok | no_return
+  def config_bind(node, type) do
+    run node, :bind, {:bind, String.to_atom(type)}
+  end
+
+  @doc """
+  Sends an XML in response to a configuration message (see config_bind). The
+  XML should be the same as the one supported by mod_xml_curl, see:
+  https://freeswitch.org/confluence/display/FREESWITCH/mod_xml_curl.
+
+  See: https://freeswitch.org/confluence/display/FREESWITCH/mod_erlang_event#mod_erlang_event-XMLsearchbindings
+  """
+  @spec config_reply(node, String.t, String.t) :: :ok | no_return
+  def config_reply(node, fetch_id, xml) do
+    run node, :send, {:fetch_reply, fetch_id, xml}
+  end
+
+  @doc """
   Returns the fake pid of the "erlang process" running in the freeswitch erlang
   node.
 
@@ -161,13 +255,17 @@ defmodule FSModEvent.Erlang do
     run node, :getpid
   end
 
+  defp sendmsg(node, uuid, command, headers) do
+    headers = [{'call-command', command}|headers]
+    run node, :sendmsg, {:sendmsg, to_char_list(uuid), headers}
+  end
+
   defp run(node, command, payload \\ nil, timeout \\ @timeout) do
     payload = if is_nil payload do
       command
     else
       payload
     end
-    Logger.debug "sending: #{inspect {command, node}}"
     send {command, node}, payload
     receive do
       {:ok, x} -> x
