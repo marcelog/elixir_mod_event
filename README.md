@@ -278,9 +278,9 @@ receive a message with a tuple like this:
 > E.sendmsg_nomedia node, "e96b78d8-1dc2-4634-84c4-58366f1a92b1", "info"
 ```
 
-### [getpid](https://freeswitch.org/confluence/display/FREESWITCH/mod_erlang_event#mod_erlang_event-getpid)
+### [pid](https://freeswitch.org/confluence/display/FREESWITCH/mod_erlang_event#mod_erlang_event-getpid)
 ```elixir
-> E.getpid node
+> E.pid node
 ```
 
 ### [handlecall](https://freeswitch.org/confluence/display/FREESWITCH/mod_erlang_event#mod_erlang_event-handlecall)
