@@ -269,6 +269,16 @@ defmodule FSModEvent.Erlang do
     run node, :getpid
   end
 
+  @doc """
+  Disable all events.
+
+  See: https://freeswitch.org/confluence/display/FREESWITCH/mod_erlang_event#mod_erlang_event-noevents
+  """
+  @spec noevents(atom) :: pid | no_return
+  def noevents(node) do
+    run node, :noevents
+  end
+
   defp sendmsg(node, uuid, command, headers) do
     headers = [{'call-command', command}|headers]
     run node, :sendmsg, {:sendmsg, to_char_list(uuid), headers}
