@@ -5,7 +5,7 @@ defmodule FSModEvent.Mixfile do
     [
       app: :elixir_mod_event,
       name: "elixir_mod_event",
-      version: "0.0.2",
+      version: "0.0.3",
       description: description,
       package: package,
       source_url: "https://github.com/marcelog/elixir_mod_event",
