@@ -13,7 +13,7 @@ To use it in your Mix projects, first add it as a dependency:
 
 ```elixir
 def deps do
-  [{:elixir_mod_event, "~> 0.0.3"}]
+  [{:elixir_mod_event, "~> 0.0.4"}]
 end
 ```
 Then run mix deps.get to install it.
