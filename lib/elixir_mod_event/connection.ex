@@ -296,7 +296,7 @@ defmodule FSModEvent.Connection do
     Logger.info "Starting FS connection"
     {:ok, socket} = :gen_tcp.connect(
       to_char_list(options[:host]), options[:port], [
-        packet: 0, active: true, mode: :list
+        packet: 0, active: :once, mode: :list
       ]
     )
     {:ok, %FSModEvent.Connection{
@@ -361,7 +361,9 @@ defmodule FSModEvent.Connection do
     handle_cast {:stop_listening, pid}, state
   end
 
-  def handle_info({:tcp, _, data}, state) do
+  def handle_info({:tcp, socket, data}, state) do
+    :inet.setopts(socket, active: :once)
+
     buffer = state.buffer ++ data
     {rest, ps} = Packet.parse buffer
     state = Enum.reduce ps, state, &process/2
