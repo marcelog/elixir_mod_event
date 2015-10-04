@@ -20,44 +20,14 @@ defmodule FSModEvent.Header do
   Given a line terminated in \n tries to parse a header in the form:
   Key: Value\n
   """
-  @spec parse(char_list) :: {String.t, String.t, char_list} | :error
-  def parse(char_list) do
-    char_list |> parse_key |> parse_value |> normalize
+  @spec parse(String.t) :: {String.t, String.t, String.t} | :error
+  def parse(string) do
+    case :re.run string, "^([^:]*): ([^\n]*)\n", [{:capture, :all, :binary}] do
+      {:match, [hv, h, v]} ->
+        l = byte_size hv
+        rest = :binary.part string, l, (byte_size(string) - l)
+        {h, v, rest}
+      _ -> :error
+    end
   end
-
-  defp parse_key(char_list) do
-    parse_key char_list, []
-  end
-
-  defp parse_key([c, ?:, 32|rest], acc) do
-    {Enum.reverse([c|acc]), rest}
-  end
-
-  defp parse_key([c|rest], acc) do
-    parse_key rest, [c|acc]
-  end
-
-  defp parse_key(_, _), do: :error
-
-  defp parse_value({key, rest}) do
-    parse_value {key, rest}, []
-  end
-
-  defp parse_value(error), do: error
-
-  defp parse_value({key, [?\n|rest]}, acc) do
-    {key, Enum.reverse(acc), rest}
-  end
-
-  defp parse_value({key, [c|rest]}, acc) do
-    parse_value {key, rest}, [c|acc]
-  end
-
-  defp parse_value(_, _), do: :error
-
-  defp normalize({key, value, rest}) do
-    {String.downcase(to_string(key)), to_string(value), rest}
-  end
-
-  defp normalize(error), do: error
 end

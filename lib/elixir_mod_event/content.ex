@@ -30,9 +30,11 @@ defmodule FSModEvent.Content do
   defp event_plain(data, acc) do
     case Header.parse data do
       {key, value, rest} ->
-        acc = Map.put acc, key, URI.decode_www_form(value)
+        acc = Map.put acc, key, :erlang.list_to_binary(
+          :http_uri.decode(:erlang.binary_to_list(value))
+        )
         case rest do
-          [?\n|rest] -> {acc, rest}
+          "\n" <> rest ->  {acc, rest}
           _ -> event_plain rest, acc
         end
       _error -> nil

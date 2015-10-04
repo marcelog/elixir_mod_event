@@ -70,7 +70,7 @@ defmodule FSModEvent.Packet do
           headers: Map.put(pkt.headers, key, value)
         }
         case rest do
-          [?\n|rest] ->
+          "\n" <> rest ->
             %FSModEvent.Packet{pkt |
               headers_complete: true,
               rest: rest
@@ -90,26 +90,41 @@ defmodule FSModEvent.Packet do
     headers: headers,
     rest: rest
   }) do
-    l = case headers["content-length"] do
+    l = case headers["Content-Length"] do
       nil -> 0
       l ->
         {l, ""} = Integer.parse l
         l
     end
-    {p, rest} = Enum.split rest, l
-    if length(p) === l do
-      ctype = headers["content-type"]
-      {p, custom_payload} = case Content.parse ctype, p do
-        nil -> {"", ""}
-        r -> r
+    if byte_size(rest) >= l do
+      p = :binary.part rest, 0, l
+      lrest = byte_size(rest) - l
+      rest = if(lrest === 0) do
+        ""
+      else
+        rstart = if(l === 0) do
+          0
+        else
+          l
+        end
+        :binary.part rest, rstart, lrest
       end
-      %FSModEvent.Packet{pkt |
-        payload_complete: true,
-        length: l,
-        payload: p,
-        custom_payload: custom_payload,
-        rest: rest
-      }
+      if byte_size(p) === l do
+        ctype = headers["Content-Type"]
+        {p, custom_payload} = case Content.parse ctype, p do
+          nil -> {"", ""}
+          r -> r
+        end
+        %FSModEvent.Packet{pkt |
+          payload_complete: true,
+          length: l,
+          payload: p,
+          custom_payload: custom_payload,
+          rest: rest
+        }
+      else
+        %FSModEvent.Packet{pkt | parse_error: true}
+      end
     else
       %FSModEvent.Packet{pkt | parse_error: true}
     end
@@ -119,9 +134,9 @@ defmodule FSModEvent.Packet do
 
   defp normalize(pkt = %FSModEvent.Packet{parse_error: false}) do
     complete = pkt.headers_complete and pkt.payload_complete
-    job_id = case pkt.headers["reply-text"] do
-      nil -> if(is_map(pkt.payload) and not is_nil pkt.payload["job-uuid"]) do
-        pkt.payload["job-uuid"]
+    job_id = case pkt.headers["Reply-Text"] do
+      nil -> if(is_map(pkt.payload) and not is_nil pkt.payload["Job-UUID"]) do
+        pkt.payload["Job-UUID"]
       else
         nil
       end
@@ -130,12 +145,12 @@ defmodule FSModEvent.Packet do
         [_, job_id] -> job_id
       end
     end
-    success = case pkt.headers["reply-text"] do
+    success = case pkt.headers["Reply-Text"] do
       nil -> false
-      <<"+OK", _rest :: binary>> -> true
+      "+OK" <> _rest -> true
       _ -> false
     end
-    ctype = pkt.headers["content-type"]
+    ctype = pkt.headers["Content-Type"]
     %FSModEvent.Packet{pkt |
       complete: complete,
       success: success,

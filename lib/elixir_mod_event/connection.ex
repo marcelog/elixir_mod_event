@@ -305,7 +305,7 @@ defmodule FSModEvent.Connection do
       port: options[:port],
       password: options[:password],
       socket: socket,
-      buffer: '',
+      buffer: "",
       sender: nil,
       state: :connecting,
       jobs: %{}
@@ -363,8 +363,7 @@ defmodule FSModEvent.Connection do
 
   def handle_info({:tcp, socket, data}, state) do
     :inet.setopts(socket, active: :once)
-
-    buffer = state.buffer ++ data
+    buffer = state.buffer <> data
     {rest, ps} = Packet.parse buffer
     state = Enum.reduce ps, state, &process/2
     {:noreply, %FSModEvent.Connection{state | buffer: rest}}
