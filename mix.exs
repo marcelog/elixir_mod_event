@@ -46,6 +46,7 @@ Find the user guide in the github repo at: https://github.com/marcelog/elixir_mo
       {:earmark, "~> 0.1", only: :dev},
       {:ex_doc, "~> 0.7", only: :dev},
       {:coverex, "~> 1.4.1", only: :test},
+      {:jiffy, git: "https://github.com/davisp/jiffy.git", tag: "0.14.3"},
       {:uuid, "~> 1.0"}
     ]
   end
