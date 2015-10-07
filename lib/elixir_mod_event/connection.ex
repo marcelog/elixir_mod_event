@@ -383,7 +383,7 @@ defmodule FSModEvent.Connection do
   end
 
   @spec terminate(term, FSModEvent.Connection.t) :: :ok
-  def terminate(reason, _state) do
+  def terminate(reason, state) do
     Logger.info "Terminating with #{inspect reason}"
     Enum.each state.listeners, fn({_, v}) ->
       send v.pid, {:terminate, reason}
