@@ -422,13 +422,15 @@ defmodule FSModEvent.Connection do
         if not is_nil state.sender do
           GenServer.reply state.sender, pkt
         end
-      # Background job response
-      not is_nil pkt.job_id ->
-        if not is_nil state.jobs[pkt.job_id] do
-          send state.jobs[pkt.job_id], {:fs_job_result, pkt.job_id, pkt}
-        end
       # Regular event
       true ->
+        # Background job response
+        if not is_nil pkt.job_id do
+          if not is_nil state.jobs[pkt.job_id] do
+            send state.jobs[pkt.job_id], {:fs_job_result, pkt.job_id, pkt}
+          end
+        end
+        # Notify listeners
         Enum.each state.listeners, fn({_, v}) ->
           if v.filter.(pkt) do
             send v.pid, {:fs_event, pkt}
