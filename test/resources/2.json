@@ -1,0 +1,4 @@
+Content-Type: text/event-json
+Content-Length: 691
+
+{"Command":"sendevent customevent","hdr":"hdr1","content-length":"57","Event-UUID":"c173a94e-6c2a-11e5-9d27-07aa2598e08f","Event-Name":"CUSTOM","Core-UUID":"3969ccf8-68fc-11e5-a15b-07aa2598e08f","FreeSWITCH-Hostname":"orchestra6","FreeSWITCH-Switchname":"orchestra6","FreeSWITCH-IPv4":"192.168.1.102","FreeSWITCH-IPv6":"::1","Event-Date-Local":"2015-10-06 15:04:19","Event-Date-GMT":"Tue, 06 Oct 2015 13:04:19 GMT","Event-Date-Timestamp":"1444136659462419","Event-Calling-File":"mod_event_socket.c","Event-Calling-Function":"parse_command","Event-Calling-Line-Number":"2210","Event-Sequence":"485377","Content-Length":"57","_body":"this is a custom payload this is a custom payload oh yeah"}

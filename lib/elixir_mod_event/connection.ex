@@ -121,23 +121,23 @@ defmodule FSModEvent.Connection do
   end
 
   @doc """
-  This will always prepend your list with "plain".
+  This will always prepend your list with "plain" if not specified.
 
   See: https://freeswitch.org/confluence/display/FREESWITCH/mod_event_socket#mod_event_socket-event
   """
-  @spec event(GenServer.server, String.t) :: FSModEvent.Packet.t
-  def event(name, events) do
-    block_send name, "event plain #{events}"
+  @spec event(GenServer.server, String.t, String.t) :: FSModEvent.Packet.t
+  def event(name, events, format \\ "plain") do
+    block_send name, "event #{format} #{events}"
   end
 
   @doc """
-  This will always prepend your list with "plain".
+  This will always prepend your list with "plain" if not specified.
 
   See: https://freeswitch.org/confluence/display/FREESWITCH/mod_event_socket#mod_event_socket-SpecialCase-'myevents'
   """
-  @spec myevents(GenServer.server, String.t) :: FSModEvent.Packet.t
-  def myevents(name, uuid) do
-    block_send name, "myevents plain #{uuid}"
+  @spec myevents(GenServer.server, String.t, String.t) :: FSModEvent.Packet.t
+  def myevents(name, uuid, format \\ "plain") do
+    block_send name, "myevents #{format} #{uuid}"
   end
 
   @doc """
@@ -296,7 +296,7 @@ defmodule FSModEvent.Connection do
     Logger.info "Starting FS connection"
     {:ok, socket} = :gen_tcp.connect(
       to_char_list(options[:host]), options[:port], [
-        packet: 0, active: :once, mode: :list
+        packet: 0, sndbuf: 4194304, recbuf: 4194304, active: :once, mode: :binary
       ]
     )
     {:ok, %FSModEvent.Connection{
@@ -371,6 +371,9 @@ defmodule FSModEvent.Connection do
 
   def handle_info({:tcp_closed, _}, state) do
     Logger.info "Connection closed"
+    Enum.each state.listeners, fn({_, v}) ->
+      send v.pid, {:stop, :normal, state}
+    end
     {:stop, :normal, state}
   end
 
@@ -380,8 +383,11 @@ defmodule FSModEvent.Connection do
   end
 
   @spec terminate(term, FSModEvent.Connection.t) :: :ok
-  def terminate(reason, _state) do
+  def terminate(reason, state) do
     Logger.info "Terminating with #{inspect reason}"
+    Enum.each state.listeners, fn({_, v}) ->
+      send v.pid, {:terminate, reason}
+    end
     :ok
   end
 
@@ -422,13 +428,15 @@ defmodule FSModEvent.Connection do
         if not is_nil state.sender do
           GenServer.reply state.sender, pkt
         end
-      # Background job response
-      not is_nil pkt.job_id ->
-        if not is_nil state.jobs[pkt.job_id] do
-          send state.jobs[pkt.job_id], {:fs_job_result, pkt.job_id, pkt}
-        end
       # Regular event
       true ->
+        # Background job response
+        if not is_nil pkt.job_id do
+          if not is_nil state.jobs[pkt.job_id] do
+            send state.jobs[pkt.job_id], {:fs_job_result, pkt.job_id, pkt}
+          end
+        end
+        # Notify listeners
         Enum.each state.listeners, fn({_, v}) ->
           if v.filter.(pkt) do
             send v.pid, {:fs_event, pkt}

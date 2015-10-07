@@ -1,0 +1,7 @@
+Content-Length: 593
+Content-Type: text/event-json
+
+{"Event-Name":"RE_SCHEDULE","Core-UUID":"e613b7d4-66b3-11e5-aac9-a57c996c3705","FreeSWITCH-Hostname":"orchestra6","FreeSWITCH-Switchname":"orchestra6","FreeSWITCH-IPv4":"192.168.1.102","FreeSWITCH-IPv6":"::1","Event-Date-Local":"2015-10-01 11:55:57","Event-Date-GMT":"Thu, 01 Oct 2015 09:55:57 GMT","Event-Date-Timestamp":"1443693357225307","Event-Calling-File":"switch_scheduler.c","Event-Calling-Function":"switch_scheduler_execute","Event-Calling-Line-Number":"71","Event-Sequence":"500540","Task-ID":"3","Task-Desc":"limit_hash_cleanup","Task-Group":"mod_hash","Task-Runtime":"1443694257"}Content-Length: 580
+Content-Type: text/event-json
+
+{"Event-Name":"RE_SCHEDULE","Core-UUID":"e613b7d4-66b3-11e5-aac9-a57c996c3705","FreeSWITCH-Hostname":"orchestra6","FreeSWITCH-Switchname":"orchestra6","FreeSWITCH-IPv4":"192.168.1.102","FreeSWITCH-IPv6":"::1","Event-Date-Local":"2015-10-01 11:56:14","Event-Date-GMT":"Thu, 01 Oct 2015 09:56:14 GMT","Event-Date-Timestamp":"1443693374225307","Event-Calling-File":"switch_scheduler.c","Event-Calling-Function":"switch_scheduler_execute","Event-Calling-Line-Number":"71","Event-Sequence":"500556","Task-ID":"1","Task-Desc":"heartbeat","Task-Group":"core","Task-Runtime":"1443693394"}
