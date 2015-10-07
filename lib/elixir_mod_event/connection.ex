@@ -371,6 +371,9 @@ defmodule FSModEvent.Connection do
 
   def handle_info({:tcp_closed, _}, state) do
     Logger.info "Connection closed"
+    Enum.each state.listeners, fn({_, v}) ->
+      send v.pid, {:stop, :normal, state}
+    end
     {:stop, :normal, state}
   end
 
@@ -382,6 +385,9 @@ defmodule FSModEvent.Connection do
   @spec terminate(term, FSModEvent.Connection.t) :: :ok
   def terminate(reason, _state) do
     Logger.info "Terminating with #{inspect reason}"
+    Enum.each state.listeners, fn({_, v}) ->
+      send v.pid, {:terminate, reason}
+    end
     :ok
   end
 
