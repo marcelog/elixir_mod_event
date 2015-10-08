@@ -16,6 +16,7 @@ defmodule FSModEvent.Content do
   limitations under the License.
   """
   alias FSModEvent.Header, as: Header
+  require Logger
 
   @doc """
   Will parse and return a payload according to the content type given.
@@ -23,6 +24,11 @@ defmodule FSModEvent.Content do
   @spec parse(String.t, char_list) :: term
   def parse("text/event-plain", data) do
     event_plain data, %{}
+  end
+
+  @spec parse(String.t, char_list) :: term
+  def parse("text/event-json", data) do
+    event_json data
   end
 
   def parse(_, data), do: {data, nil}
@@ -40,4 +46,17 @@ defmodule FSModEvent.Content do
       _error -> nil
     end
   end
+
+  defp event_json(data) do
+    try do
+        r = :jiffy.decode(data,  [:return_maps])
+        {custom, r} = Map.pop r, "_body"
+        {r, custom}
+    catch
+        {:error, reason} -> 
+            Logger.warn "Cannot decode json: #{inspect reason}"
+            nil
+    end
+  end
+
 end
