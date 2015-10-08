@@ -145,6 +145,97 @@ defmodule FSModEvent.Test.Packet do
     assert p.custom_payload === "this is a custom payload this is a custom payload oh yeah"
   end
 
+  test "can parse multiple json" do
+    # adding a \n here since is added by the text editor, while FS does not send it
+    {"\n", pkts} = Packet.parse read!("1.json")
+    assert length(pkts) === 2
+    [p1, p2] = pkts
+    assert p1.type === "text/event-json"
+    refute p1.success
+    assert p1.headers_complete
+    assert p1.payload_complete
+    assert p1.complete
+    refute p1.parse_error
+    assert p1.headers === %{
+      "Content-Type" => "text/event-json",
+      "Content-Length" => "593"
+    }
+    assert p1.length === 593
+    assert is_nil p1.rest
+    assert is_nil p1.job_id
+    assert p1.payload === %{
+      "Task-Runtime" => "1443694257",
+      "Task-Group" => "mod_hash",
+      "Task-Desc" => "limit_hash_cleanup",
+      "Task-ID" => "3",
+      "Event-Sequence" => "500540",
+      "Event-Calling-Line-Number" => "71",
+      "Event-Calling-Function" => "switch_scheduler_execute",
+      "Event-Calling-File" => "switch_scheduler.c",
+      "Event-Date-Timestamp" => "1443693357225307",
+      "Event-Date-GMT" => "Thu, 01 Oct 2015 09:55:57 GMT",
+      "Event-Date-Local" => "2015-10-01 11:55:57",
+      "FreeSWITCH-IPv6" => "::1",
+      "FreeSWITCH-IPv4" => "192.168.1.102",
+      "FreeSWITCH-Switchname" => "orchestra6",
+      "FreeSWITCH-Hostname" => "orchestra6",
+      "Core-UUID" => "e613b7d4-66b3-11e5-aac9-a57c996c3705",
+      "Event-Name" => "RE_SCHEDULE"
+    }
+
+    assert p2.type === "text/event-json"
+    refute p2.success
+    assert p2.headers_complete
+    assert p2.payload_complete
+    assert p2.complete
+    refute p2.parse_error
+    assert p2.headers === %{
+      "Content-Type" => "text/event-json",
+      "Content-Length" => "580"
+    }
+    assert p2.length === 580
+    assert is_nil p2.rest
+    assert is_nil p2.job_id
+  end
+
+  test "can parse custom data json" do
+    {"\n", [p]} = Packet.parse read!("2.json")
+    assert p.type === "text/event-json"
+    refute p.success
+    assert p.headers_complete
+    assert p.payload_complete
+    assert p.complete
+    refute p.parse_error
+    assert p.headers === %{
+      "Content-Type" => "text/event-json",
+      "Content-Length" => "691"
+    }
+    assert p.length === 691
+    assert is_nil p.rest
+    assert is_nil p.job_id
+    assert p.payload === %{
+      "Content-Length" => "57",
+      "Event-Sequence" => "485377",
+      "Event-Calling-Line-Number" => "2210",
+      "Event-Calling-Function" => "parse_command",
+      "Event-Calling-File" => "mod_event_socket.c",
+      "Event-Date-Timestamp" => "1444136659462419",
+      "Event-Date-GMT" => "Tue, 06 Oct 2015 13:04:19 GMT",
+      "Event-Date-Local" => "2015-10-06 15:04:19",
+      "FreeSWITCH-IPv6" => "::1",
+      "FreeSWITCH-IPv4" => "192.168.1.102",
+      "FreeSWITCH-Switchname" => "orchestra6",
+      "FreeSWITCH-Hostname" => "orchestra6",
+      "Core-UUID" => "3969ccf8-68fc-11e5-a15b-07aa2598e08f",
+      "Event-Name" => "CUSTOM",
+      "Event-UUID" => "c173a94e-6c2a-11e5-9d27-07aa2598e08f",
+      "hdr" => "hdr1",
+      "content-length" => "57",
+      "Command" => "sendevent customevent",
+    }
+    assert p.custom_payload === "this is a custom payload this is a custom payload oh yeah"
+  end
+
   defp read!(file) do
     File.read!("test/resources/#{file}")
   end

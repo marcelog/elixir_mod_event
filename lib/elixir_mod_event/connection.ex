@@ -121,23 +121,23 @@ defmodule FSModEvent.Connection do
   end
 
   @doc """
-  This will always prepend your list with "plain".
+  This will always prepend your list with "plain" if not specified.
 
   See: https://freeswitch.org/confluence/display/FREESWITCH/mod_event_socket#mod_event_socket-event
   """
-  @spec event(GenServer.server, String.t) :: FSModEvent.Packet.t
-  def event(name, events) do
-    block_send name, "event plain #{events}"
+  @spec event(GenServer.server, String.t, String.t) :: FSModEvent.Packet.t
+  def event(name, events, format \\ "plain") do
+    block_send name, "event #{format} #{events}"
   end
 
   @doc """
-  This will always prepend your list with "plain".
+  This will always prepend your list with "plain" if not specified.
 
   See: https://freeswitch.org/confluence/display/FREESWITCH/mod_event_socket#mod_event_socket-SpecialCase-'myevents'
   """
-  @spec myevents(GenServer.server, String.t) :: FSModEvent.Packet.t
-  def myevents(name, uuid) do
-    block_send name, "myevents plain #{uuid}"
+  @spec myevents(GenServer.server, String.t, String.t) :: FSModEvent.Packet.t
+  def myevents(name, uuid, format \\ "plain") do
+    block_send name, "myevents #{format} #{uuid}"
   end
 
   @doc """
