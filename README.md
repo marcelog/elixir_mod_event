@@ -317,3 +317,8 @@ The source code is released under Apache 2 License.
 
 Check [LICENSE](https://github.com/marcelog/elixir_mod_event/blob/master/LICENSE) file for more information.
 
+# Thanks To
+
+ * Matteo Brancaleoni ([xadhoom](https://github.com/xadhoom)) for his help in testing and
+ improving overall performance.
+
