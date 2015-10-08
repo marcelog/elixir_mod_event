@@ -312,10 +312,19 @@ The format and sections correspond to the ones supported by [mod_xml_curl](https
 
 ----
 
+# Breaking changes from 0.0.x to 0.1.x
+
+ * Source data will be processed as binaries instead of a list of chars.
+ * Headers are now not normalized (i.e: instead of lowercasing them, they are left as is).
+
+----
+
 # License
 The source code is released under Apache 2 License.
 
 Check [LICENSE](https://github.com/marcelog/elixir_mod_event/blob/master/LICENSE) file for more information.
+
+----
 
 # Thanks To
 
