@@ -296,7 +296,7 @@ defmodule FSModEvent.Connection do
     Logger.info "Starting FS connection"
     {:ok, socket} = :gen_tcp.connect(
       to_char_list(options[:host]), options[:port], [
-        packet: 0, active: :once, mode: :list
+        packet: 0, sndbuf: 4194304, recbuf: 4194304, active: :once, mode: :binary
       ]
     )
     {:ok, %FSModEvent.Connection{
