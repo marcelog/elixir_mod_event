@@ -199,7 +199,7 @@ defmodule FSModEvent.Test.Packet do
   end
 
   test "can parse custom data json" do
-    {"\n", [p]} = Packet.parse read!("2.json")
+    {"", [p]} = Packet.parse read!("2.json")
     assert p.type === "text/event-json"
     refute p.success
     assert p.headers_complete
