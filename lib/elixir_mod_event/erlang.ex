@@ -48,7 +48,7 @@ defmodule FSModEvent.Erlang do
   """
   @spec bgapi(node, String.t, String.t) :: String.t | no_return
   def bgapi(node, command, args \\ "", timeout \\ @timeout) do
-    caller = self
+    caller = self()
     spawn fn ->
       job_id = run node, :bgapi, {:bgapi, String.to_atom(command), args}
       send caller, {:fs_job_id, job_id}

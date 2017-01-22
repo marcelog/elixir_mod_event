@@ -40,7 +40,7 @@ defmodule FSModEvent.Connection do
   """
   @spec start_listening(GenServer.server, fun) :: :ok
   def start_listening(name, filter_fun \\ fn(_) -> true end) do
-    GenServer.cast name, {:start_listening, self, filter_fun}
+    GenServer.cast name, {:start_listening, self(), filter_fun}
   end
 
   @doc """
@@ -48,7 +48,7 @@ defmodule FSModEvent.Connection do
   """
   @spec stop_listening(GenServer.server) :: :ok
   def stop_listening(name) do
-    GenServer.cast name, {:stop_listening, self}
+    GenServer.cast name, {:stop_listening, self()}
   end
 
   @doc """
@@ -101,7 +101,7 @@ defmodule FSModEvent.Connection do
   """
   @spec bgapi(GenServer.server, String.t, String.t) :: String.t
   def bgapi(name, command, args \\ "") do
-    GenServer.call name, {:bgapi, self, command, args}
+    GenServer.call name, {:bgapi, self(), command, args}
   end
 
   @doc """

@@ -5,14 +5,14 @@ defmodule FSModEvent.Mixfile do
     [
       app: :elixir_mod_event,
       name: "elixir_mod_event",
-      version: "0.0.6",
-      description: description,
-      package: package,
+      version: "0.0.10",
+      description: description(),
+      package: package(),
       source_url: "https://github.com/marcelog/elixir_mod_event",
       elixir: "~> 1.0",
       build_embedded: Mix.env == :prod,
       start_permanent: Mix.env == :prod,
-      deps: deps
+      deps: deps()
     ]
   end
 
@@ -43,10 +43,10 @@ Find the user guide in the github repo at: https://github.com/marcelog/elixir_mo
 
   defp deps do
     [
-      {:earmark, "~> 0.2.1", only: :dev},
-      {:ex_doc, "~> 0.12.0", only: :dev},
-      {:coverex, "~> 1.4.9", only: :test},
-      {:uuid, "~> 1.1.4"}
+      {:earmark, "~> 1.0.3", only: :dev},
+      {:ex_doc, "~> 0.14.5", only: :dev},
+      {:coverex, "~> 1.4.12", only: :test},
+      {:uuid, "~> 1.1.6"}
     ]
   end
 end
