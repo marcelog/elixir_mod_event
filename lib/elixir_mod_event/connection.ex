@@ -417,16 +417,21 @@ defmodule FSModEvent.Connection do
   end
 
   defp process(pkt, state) do
-    cond do
+    new_state = cond do
       # Command immediate response
       Packet.is_response?(pkt) ->
         if not is_nil state.sender do
           GenServer.reply state.sender, pkt
         end
+        state
       # Background job response
       not is_nil pkt.job_id ->
         if not is_nil state.jobs[pkt.job_id] do
           send state.jobs[pkt.job_id], {:fs_job_result, pkt.job_id, pkt}
+          jobs = Map.delete(state.jobs, pkt.job_id)
+          %FSModEvent.Connection{state | jobs: jobs}
+        else
+          state
         end
       # Regular event
       true ->
@@ -435,8 +440,9 @@ defmodule FSModEvent.Connection do
             send v.pid, {:fs_event, pkt}
           end
         end
+        state
     end
-    %FSModEvent.Connection{state | sender: nil}
+    %FSModEvent.Connection{new_state | sender: nil}
   end
 
   defp auth(socket, password) do
