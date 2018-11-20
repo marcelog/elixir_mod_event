@@ -4,3 +4,5 @@ doc
 /deps
 erl_crash.dump
 *.ez
+
+/.elixir_ls
