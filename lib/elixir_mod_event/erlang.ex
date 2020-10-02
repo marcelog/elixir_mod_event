@@ -168,7 +168,7 @@ defmodule FSModEvent.Erlang do
       {'execute-app-name', to_char_list(command)},
       {'execute-app-arg', to_char_list(args)},
       {'loops', to_char_list(loops)},
-      {'Event-UUID', to_charlist(event_uuid)}
+      {'Event-UUID', to_char_list(event_uuid)}
     ]
   end
 
