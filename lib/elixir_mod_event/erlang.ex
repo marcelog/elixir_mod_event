@@ -163,11 +163,12 @@ defmodule FSModEvent.Erlang do
   @spec sendmsg_exec(
     node, String.t, String.t, String.t, Integer.t
   ) :: :ok | no_return
-  def sendmsg_exec(name, uuid, command, args \\ "", loops \\ 1) do
+  def sendmsg_exec(name, uuid, command, args \\ "", event_uuid \\ "", loops \\ 1) do
     sendmsg name, uuid, 'execute', [
       {'execute-app-name', to_char_list(command)},
       {'execute-app-arg', to_char_list(args)},
-      {'loops', to_char_list(loops)}
+      {'loops', to_char_list(loops)},
+      {'Event-UUID', to_charlist(event_uuid)}
     ]
   end
 
