@@ -197,13 +197,14 @@ defmodule FSModEvent.Connection do
   See: https://freeswitch.org/confluence/display/FREESWITCH/mod_event_socket#mod_event_socket-sendmsg
   """
   @spec sendmsg_exec(
-    GenServer.server, String.t, String.t, String.t, Integer.t, String.t
+    GenServer.server, String.t, String.t, String.t, String.t, Integer.t, String.t
   ) :: FSModEvent.Packet.t
-  def sendmsg_exec(name, uuid, command, args \\ "", loops \\ 1, body \\ "") do
+  def sendmsg_exec(name, uuid, command, args \\ "", event_uuid \\ "", loops \\ 1, body \\ "") do
     sendmsg name, uuid, "execute", [
       {"execute-app-name", command},
       {"execute-app-arg", args},
-      {"loops", to_string(loops)}
+      {"loops", to_string(loops)},
+      {"Event-UUID", event_uuid}
     ], body
   end
 
