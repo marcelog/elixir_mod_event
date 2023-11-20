@@ -46,7 +46,7 @@ Find the user guide in the github repo at: https://github.com/marcelog/elixir_mo
       {:earmark, "~> 1.0.3", only: :dev},
       {:ex_doc, "~> 0.14.5", only: :dev},
       {:coverex, "~> 1.4.12", only: :test},
-      {:uuid, "~> 1.1.6"}
+      {:elixir_uuid, "~> 1.2"}
     ]
   end
 end
